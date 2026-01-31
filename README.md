@@ -131,7 +131,7 @@ fmi() { fmf "$1" "${2:-$FM/_inbox}"; }
 ### Formatting
 
     - Headings are outcomes
-    - Code blocks contain copy/paste-ready commands
+    - Code blocks contain copy/paste ready commands
     - Variants live under the same outcome heading when they achieve the same thing
 
 ### Flags
