@@ -14,6 +14,7 @@ Design goals:
 
 ## Repository Layout
 
+```bash
 field-manual/
 ├── README.md
 ├── unix/
@@ -53,8 +54,7 @@ field-manual/
 └── _inbox/
 ├── misc-unfiled.md
 └── (things pending review)
-
-Copy code
+```
 
 ---
 
@@ -65,57 +65,55 @@ Set the repo root once:
 ```bash
 export FM="$HOME/field-manual"
 Search by outcome (recommended)
-bash
-Copy code
+```
+```bash
 rg -n --hidden -S "reverse shell|listener|file transfer" "$FM"
 rg -n --hidden -S "suid|world-readable|permissions" "$FM/unix"
 rg -n --hidden -S "sqli|sqlmap|INFORMATION_SCHEMA" "$FM/security"
 rg -n --hidden -S "xxe|ssrf|ssti" "$FM/security"
 Search within a scope
-bash
-Copy code
+```
+```bash
 rg -n --hidden -S "ffuf " "$FM/tools"
 rg -n --hidden -S "curl -I|--head" "$FM/networking/curl.md"
 Find anything that needs verification
-bash
-Copy code
+```
+```bash
 rg -n --hidden -S "Review:" "$FM"
 Interactive Search (Recommended)
 If you use the fmf() helper (ripgrep → fzf → preview → open at line in nvim):
-
-bash
-Copy code
+```
+```bash
 fmf "reverse shell"
 fmu "pty.spawn|stty raw"
 fmx "SSRF|gopher://|<!ENTITY"
 fmi "Review:"
 (See your shell config for the fmf()/fmu()/fmn()/fmx() functions.)
+```
+## Conventions
 
-Conventions
-Formatting
-Headings are outcomes
+### Formatting
 
-Code blocks contain copy/paste-ready commands
+    - Headings are outcomes
+    - Code blocks contain copy/paste-ready commands
+    - Variants live under the same outcome heading when they achieve the same thing
 
-Variants live under the same outcome heading when they achieve the same thing
+### Flags
+    - Review: unclear, truncated, or version-sensitive notes
+    - Items that don’t fit the current structure land in _inbox/ until sorted
 
-Flags
-Review: unclear, truncated, or version-sensitive notes
+## Workflow for Updates
 
-Items that don’t fit the current structure land in _inbox/ until sorted
+    1. Drop raw snippets into _inbox/
+    2. Deduplicate by searching for similar outcomes:
 
-Workflow for Updates
-Drop raw snippets into _inbox/
-
-Deduplicate by searching for similar outcomes:
-
-bash
-Copy code
+```bash
 rg -n --hidden -S "keyword" "$FM"
-Move into the correct file and keep one canonical version
+```
+    3. Move into the correct file and keep one canonical version
+    4. Keep anything uncertain flagged with Review instead of guessing
 
-Keep anything uncertain flagged with Review instead of guessing
+# Disclaimer
 
-Disclaimer
-This repository is a personal reference meant for authorized testing, labs, and learning. Only use techniques and tooling where you have explicit permission.
+**This repository is a personal reference meant for authorized testing, labs, and learning. Only use techniques and tooling where you have explicit permissision.**
 
