@@ -1,14 +1,12 @@
 # Field Manual
 
-A fast, grep-first reference of commands and payload primitives for day-to-day security work, labs, and CTFs.
+A fast, greppable reference of commands and payload primitives for day to day security work, labs, and CTFs.
 
 Design goals:
-- **One command = one outcome**
 - **Outcome > tool**
 - **Examples beat explanation**
 - **Searchability > hierarchy**
 - **No duplicated commands**
-- **No invented content** (everything is sourced from raw notes; unclear items are flagged)
 
 ---
 
@@ -60,36 +58,74 @@ field-manual/
 
 ## How to Use (Grep-First)
 
-Set the repo root once:
-
+*Set the repo root once:*
 ```bash
 export FM="$HOME/field-manual"
 ```
+*Search by outcome:*
 ```bash
-Search by outcome
 rg -n --hidden -S "reverse shell|listener|file transfer" "$FM"
 rg -n --hidden -S "suid|world-readable|permissions" "$FM/unix"
 rg -n --hidden -S "sqli|sqlmap|INFORMATION_SCHEMA" "$FM/security"
 rg -n --hidden -S "xxe|ssrf|ssti" "$FM/security"
 ```
+*Search within a scope:*
 ```bash
-Search within a scope
 rg -n --hidden -S "ffuf " "$FM/tools"
 rg -n --hidden -S "curl -I|--head" "$FM/networking/curl.md"
 ```
+*Find anything that needs verification:*
 ```bash
-Find anything that needs verification
 rg -n --hidden -S "Review:" "$FM"
 ```
+*Interactive Search*
 ```bash
-Interactive Search
-If you use the fmf() helper (ripgrep → fzf → preview → open at line in nvim):
 fmf "reverse shell"
 fmu "pty.spawn|stty raw"
 fmx "SSRF|gopher://|<!ENTITY"
 fmi "Review:"
-(See your shell config for the fmf()/fmu()/fmn()/fmx() functions.)
 ```
+*Shell config for the fmf()/fmu()/fmn()/fmx() functions:*
+```bash
+# Field manual root (adjust if needed)
+export FM="$HOME/field-manual"
+
+# Fast interactive search: ripgrep -> fzf -> preview -> open in nvim at line (Ctrl+O)
+fmf() {
+  local query="$1"
+  local scope="${2:-$FM}"
+
+  if [[ -z "$query" ]]; then
+    echo "Usage: fmf <pattern> [scope]"
+    return 1
+  fi
+
+  rg -n --hidden -S --no-heading "$query" "$scope" \
+    | fzf --ansi \
+          --prompt="fmf> " \
+          --delimiter=":" \
+          --preview-window='right:65%:wrap' \
+          --preview '
+            file={1}; line={2};
+            if command -v bat >/dev/null 2>&1; then
+              bat --style=plain --color=always --highlight-line "$line" --line-range "$((line-25)):$((line+60))" "$file"
+            else
+              sed -n "$((line-25)),$((line+60))p" "$file"
+            fi
+          ' \
+          --bind 'ctrl-o:execute(nvim +{2} {1})'
+}
+
+# Optional scope shortcuts
+fmu() { fmf "$1" "${2:-$FM/unix}"; }
+fmn() { fmf "$1" "${2:-$FM/networking}"; }
+fmx() { fmf "$1" "${2:-$FM/security}"; }
+fmt() { fmf "$1" "${2:-$FM/tools}"; }
+fmr() { fmf "$1" "${2:-$FM/reference}"; }
+fmi() { fmf "$1" "${2:-$FM/_inbox}"; }
+```
+
+
 ## Conventions
 
 ### Formatting
