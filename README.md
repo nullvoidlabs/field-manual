@@ -64,26 +64,26 @@ Set the repo root once:
 
 ```bash
 export FM="$HOME/field-manual"
-Search by outcome (recommended)
 ```
 ```bash
+Search by outcome
 rg -n --hidden -S "reverse shell|listener|file transfer" "$FM"
 rg -n --hidden -S "suid|world-readable|permissions" "$FM/unix"
 rg -n --hidden -S "sqli|sqlmap|INFORMATION_SCHEMA" "$FM/security"
 rg -n --hidden -S "xxe|ssrf|ssti" "$FM/security"
-Search within a scope
 ```
 ```bash
+Search within a scope
 rg -n --hidden -S "ffuf " "$FM/tools"
 rg -n --hidden -S "curl -I|--head" "$FM/networking/curl.md"
+```
+```bash
 Find anything that needs verification
-```
-```bash
 rg -n --hidden -S "Review:" "$FM"
-Interactive Search (Recommended)
-If you use the fmf() helper (ripgrep → fzf → preview → open at line in nvim):
 ```
 ```bash
+Interactive Search
+If you use the fmf() helper (ripgrep → fzf → preview → open at line in nvim):
 fmf "reverse shell"
 fmu "pty.spawn|stty raw"
 fmx "SSRF|gopher://|<!ENTITY"
