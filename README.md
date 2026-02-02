@@ -152,4 +152,4 @@ rg -n --hidden -S "keyword" "$FM"
 
 # Disclaimer
 
-**This repository is a personal reference meant for authorized testing, labs, and lea>
+**This repository is a personal reference meant for authorized testing, labs, and learning. Only use techniques and tooling where you have explicit permission.**
