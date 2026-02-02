@@ -58,39 +58,10 @@ field-manual/
 
 ## How to Use (Grep-First)
 
-*Set the repo root once:*
+*Set the repo root + shell config for the fmf()/fmu()/fmn()/fmx() functions:*
 ```bash
-export FM="$HOME/field-manual"
-```
-*Search by outcome:*
-```bash
-rg -n --hidden -S "reverse shell|listener|file transfer" "$FM"
-rg -n --hidden -S "suid|world-readable|permissions" "$FM/unix"
-rg -n --hidden -S "sqli|sqlmap|INFORMATION_SCHEMA" "$FM/security"
-rg -n --hidden -S "xxe|ssrf|ssti" "$FM/security"
-```
-*Search within a scope:*
-```bash
-rg -n --hidden -S "ffuf " "$FM/tools"
-rg -n --hidden -S "curl -I|--head" "$FM/networking/curl.md"
-```
-*Find anything that needs verification:*
-```bash
-rg -n --hidden -S "Review:" "$FM"
-```
-*Interactive Search*
-```bash
-fmf "reverse shell"
-fmu "pty.spawn|stty raw"
-fmx "SSRF|gopher://|<!ENTITY"
-fmi "Review:"
-```
-*Shell config for the fmf()/fmu()/fmn()/fmx() functions:*
-```bash
-# Field manual root (adjust if needed)
 export FM="$HOME/field-manual"
 
-# Fast interactive search: ripgrep -> fzf -> preview -> open in nvim at line (Ctrl+O)
 fmf() {
   local query="$1"
   local scope="${2:-$FM}"
@@ -107,10 +78,16 @@ fmf() {
           --preview-window='right:65%:wrap' \
           --preview '
             file={1}; line={2};
+            start=$(( line > 25 ? line - 25 : 1 ));
+            end=$(( line + 60 ));
+
             if command -v bat >/dev/null 2>&1; then
-              bat --style=plain --color=always --highlight-line "$line" --line-range "$((line-25)):$((line+60))" "$file"
+              bat --style=plain --color=always \
+                  --highlight-line "$line" \
+                  --line-range "$start:$end" \
+                  "$file"
             else
-              sed -n "$((line-25)),$((line+60))p" "$file"
+              sed -n "${start},${end}p" "$file"
             fi
           ' \
           --bind 'ctrl-o:execute(nvim +{2} {1})'
@@ -124,9 +101,33 @@ fmt() { fmf "$1" "${2:-$FM/tools}"; }
 fmr() { fmf "$1" "${2:-$FM/reference}"; }
 fmi() { fmf "$1" "${2:-$FM/_inbox}"; }
 ```
+*Interactive Search*
+```bash
+fmf "reverse shell"
+fmu "pty.spawn|stty raw"
+fmx "SSRF|gopher://|<!ENTITY"
+fmi "Review:"
+```
+## Manual Searching
+*Search by outcome:*
+```bash
+rg -n --hidden -S "reverse shell|listener|file transfer" "$FM"
+rg -n --hidden -S "suid|world-readable|permissions" "$FM/unix"
+rg -n --hidden -S "sqli|sqlmap|INFORMATION_SCHEMA" "$FM/security"
+rg -n --hidden -S "xxe|ssrf|ssti" "$FM/security"
+```
+*Search within a scope:*
+```bash
+rg -n --hidden -S "ffuf " "$FM/tools"
+rg -n --hidden -S "curl -I|--head" "$FM/networking/curl.md"
+```
+*Find anything that needs verification:*
+```bash
+rg -n --hidden -S "Review:" "$FM"
+```
 
 
-## Conventions
+# Conventions
 
 ### Formatting
 
@@ -134,7 +135,7 @@ fmi() { fmf "$1" "${2:-$FM/_inbox}"; }
     - Code blocks contain copy/paste ready commands
     - Variants live under the same outcome heading when they achieve the same thing
 
-### Flags
+### Note
     - Review: unclear, truncated, or version-sensitive notes
     - Items that don’t fit the current structure land in _inbox/ until sorted
 
@@ -151,5 +152,4 @@ rg -n --hidden -S "keyword" "$FM"
 
 # Disclaimer
 
-**This repository is a personal reference meant for authorized testing, labs, and learning. Only use techniques and tooling where you have explicit permissision.**
-
+**This repository is a personal reference meant for authorized testing, labs, and lea>
