@@ -8,3 +8,7 @@
 
 ## Create a numeric sequence wordlist (1..1000)
     for i in $(seq 1 1000); do echo $i >> ids.txt; done
+
+## Temporarily change name & hostname
+
+    PS1='nullvoid@nullvoidlabs:\w\$ '
